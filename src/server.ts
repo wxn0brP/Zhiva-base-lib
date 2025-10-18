@@ -39,9 +39,9 @@ server.listen(0, () => {
     started = true;
 });
 
-export async function oneWindow(path = "/") {
+export async function oneWindow(path = "/", title?: string) {
     await waitToStart();
-    const window = openWindow(port + path);
+    const window = openWindow(port + path, title);
     window.on("close", () => process.exit(0));
     return window;
 }
