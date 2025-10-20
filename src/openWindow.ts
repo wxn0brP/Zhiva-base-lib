@@ -1,6 +1,7 @@
 import { spawn } from "child_process";
+import { homedir } from "os";
 
-const zhiva = process.env.HOME + "/.zhiva/zhiva";
+const zhiva = homedir() + "/.zhiva/zhiva";
 
 export function openWindow(url: string | number, title?: string) {
     const proc = spawn(
