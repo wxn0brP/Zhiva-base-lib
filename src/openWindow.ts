@@ -1,11 +1,12 @@
 import { spawn } from "child_process";
 import { homedir } from "os";
+import { join, resolve } from "path";
 
-const zhiva = homedir() + "/.zhiva/zhiva";
+const zhiva = join(homedir(), ".zhiva/zhiva");
 
 export function openWindow(url: string | number, title?: string) {
     const proc = spawn(
-        zhiva,
+        resolve(zhiva),
         [url.toString(), title ? title : ""],
     )
 
