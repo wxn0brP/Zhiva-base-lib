@@ -2,7 +2,8 @@ import { spawn } from "child_process";
 import { homedir } from "os";
 import { join, resolve } from "path";
 
-const zhiva = join(homedir(), ".zhiva/zhiva");
+let zhiva = join(homedir(), ".zhiva/zhiva");
+if (process.platform === "win32") zhiva += ".exe";
 
 export function openWindow(url: string | number, title?: string) {
     const proc = spawn(
