@@ -1,26 +1,9 @@
 import FalconFrame from "@wxn0brp/falcon-frame";
-import { GlovesLinkServer } from "@wxn0brp/gloves-link-server";
-import { AuthFn } from "@wxn0brp/gloves-link-server/types";
 import { createServer } from "http";
-import { resolve } from "path";
 import { openWindow } from "./openWindow";
 
 export const app = new FalconFrame();
 export const server = createServer(app.getApp());
-
-export function createWWS(authFn: AuthFn) {
-    const wws = new GlovesLinkServer({
-        server,
-        authFn
-    });
-
-    const clientDir =
-        process.env.ZHIVA_GLOVES_LINK_CLIENT_DIR ||
-        resolve(import.meta.dirname + "/../node_modules/@wxn0brp/gloves-link-client/dist");
-
-    wws.falconFrame(app, clientDir);
-    return wws;
-}
 
 let waitToStartResolve: ((port: number) => void);
 let started = false;
