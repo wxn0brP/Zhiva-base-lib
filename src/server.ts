@@ -1,6 +1,10 @@
 import FalconFrame from "@wxn0brp/falcon-frame";
 import { createServer } from "http";
 import { openWindow } from "./openWindow";
+import { join } from "path";
+import { homedir } from "os";
+
+if (!process.env.ZHIVA_ROOT) process.env.ZHIVA_ROOT = join(homedir(), ".zhiva");
 
 export const app = new FalconFrame();
 export const server = createServer(app.getApp());
@@ -16,7 +20,7 @@ export async function waitToStart() {
     });
 }
 
-server.listen(0, () => {
+server.listen(process.env.ZHIVA_PORT ?? 0, () => {
     port = (server.address() as any).port;
     waitToStartResolve?.(port);
     started = true;
