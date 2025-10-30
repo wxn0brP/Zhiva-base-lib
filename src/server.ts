@@ -1,8 +1,8 @@
 import FalconFrame from "@wxn0brp/falcon-frame";
 import { createServer } from "http";
-import { openWindow } from "./openWindow";
-import { join } from "path";
 import { homedir } from "os";
+import { join } from "path";
+import { openWindow } from "./openWindow";
 
 if (!process.env.ZHIVA_ROOT) process.env.ZHIVA_ROOT = join(homedir(), ".zhiva");
 
