@@ -8,6 +8,7 @@ if (!process.env.ZHIVA_ROOT) process.env.ZHIVA_ROOT = join(homedir(), ".zhiva");
 
 export const app = new FalconFrame();
 export const server = createServer(app.getApp());
+app.static("/zhiva-assets", join(import.meta.dirname, "..", "assets"));
 
 let waitToStartResolve: ((port: number) => void);
 let started = false;
