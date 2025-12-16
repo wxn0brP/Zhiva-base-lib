@@ -17,6 +17,6 @@ $notify.ShowBalloonTip(10000, "${title}", "${message}", [System.Windows.Forms.To
         const script = `display notification "${message}" with title "${title}"`;
         spawn("osascript", ["-e", script]);
     } else {
-        console.warn("Notifications not supported on this platform:", platform);
+        console.warn("[Z-BIB-1-01] Notifications not supported on this platform:", platform);
     }
 }
