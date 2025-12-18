@@ -2,8 +2,9 @@ import FalconFrame from "@wxn0brp/falcon-frame";
 import { createServer } from "http";
 import { homedir } from "os";
 import { join } from "path";
-import { openWindow } from "./openWindow";
+import { apiRouter, apiSecret } from "./api";
 import { readLastPort, saveLastPort } from "./lastPort";
+import { openWindow } from "./openWindow";
 
 if (!process.env.ZHIVA_ROOT) process.env.ZHIVA_ROOT = join(homedir(), ".zhiva");
 const envPort = process.env.ZHIVA_PORT;
@@ -12,6 +13,7 @@ const initialPort = envPort !== undefined ? Number(envPort) : readLastPort() ?? 
 export const app = new FalconFrame();
 export const server = createServer(app.getApp());
 app.static("/zhiva-assets", join(import.meta.dirname, "..", "assets"));
+app.use("/api", apiRouter);
 
 let waitToStartResolve: ((port: number) => void);
 let started = false;
@@ -45,7 +47,12 @@ server.once("error", (err: any) => {
 
 export async function oneWindow(path = "/", title?: string) {
     await waitToStart();
-    const window = openWindow(port + path, title);
+
+    const rawUrl = `http://localhost:` + port + path;
+    const url = new URL(rawUrl);
+    url.searchParams.set("secret", apiSecret);
+
+    const window = openWindow(url.toString(), title);
     window.on("close", () => process.exit(0));
     return window;
 }
