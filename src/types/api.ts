@@ -3,11 +3,3 @@ export interface ZhivaApiOptions extends RequestInit {
 }
 
 export type ZhivaApiQuery = Record<string, string | number | boolean>;
-
-declare global {
-    function fetchApi(
-        url: string,
-        opts?: ZhivaApiOptions,
-        query?: ZhivaApiQuery
-    ): Promise<Response>;
-}

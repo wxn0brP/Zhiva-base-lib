@@ -3,7 +3,7 @@
     const token = urlParams.get("secret");
 
     window.fetchApi = (url, opts = {}, query = {}) => {
-        const urlObj = new URL(url, window.location.origin);
+        const urlObj = new URL("/api/" + url, window.location.origin);
 
         Object.entries(query).forEach(([key, value]) => {
             urlObj.searchParams.set(key, value);
@@ -13,7 +13,7 @@
             ...opts,
             headers: {
                 ...opts.headers,
-                "X-Zhiva-Token": token
+                "x-zhiva-token": token
             }
         });
     };
