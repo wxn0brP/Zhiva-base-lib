@@ -5,10 +5,19 @@ import { join } from "path";
 import { apiRouter, apiSecret } from "./api";
 import { readLastPort, saveLastPort } from "./lastPort";
 import { openWindow } from "./openWindow";
+import { loadJson } from "./json";
 
 if (!process.env.ZHIVA_ROOT) process.env.ZHIVA_ROOT = join(homedir(), ".zhiva");
 const envPort = process.env.ZHIVA_PORT;
-const initialPort = envPort !== undefined ? Number(envPort) : readLastPort() ?? 0;
+
+let initialPort = 0;
+const lastPort = readLastPort();
+const zhivaJson = loadJson("zhiva.json");
+
+if (envPort !== undefined) initialPort = Number(envPort);
+if (zhivaJson?.forcePort !== undefined) initialPort = zhivaJson.forcePort;
+else if (lastPort !== null) initialPort = lastPort;
+else initialPort = 0;
 
 export const app = new FalconFrame();
 export const server = createServer(app.getApp());
