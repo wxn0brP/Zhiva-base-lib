@@ -16,10 +16,10 @@
 		"typescript": "*"
 	},
 	"dependencies": {
-		"@wxn0brp/falcon-frame": "^0.5.4",
+		"@wxn0brp/falcon-frame": "^0.5.9",
 		"@wxn0brp/flanker-dialog": "^0.0.5",
-		"@wxn0brp/flanker-ui": "^0.4.6",
-		"@wxn0brp/vql": "^0.10.1"
+		"@wxn0brp/flanker-ui": "^0.5.1",
+		"@wxn0brp/vql": "^0.10.2"
 	},
 	"exports": {
 		".": {
