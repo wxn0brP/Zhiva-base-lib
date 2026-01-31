@@ -19,7 +19,9 @@ if (zhivaJson?.forcePort !== undefined) initialPort = zhivaJson.forcePort;
 else if (lastPort !== null) initialPort = lastPort;
 else initialPort = 0;
 
-export const app = new FalconFrame();
+export interface FalconFrameVars { }
+
+export const app = new FalconFrame<FalconFrameVars>();
 export const server = createServer(app.getApp());
 app.static("/zhiva-assets", join(import.meta.dirname, "..", "assets"));
 app.use("/api", apiRouter);
