@@ -8,7 +8,10 @@ if (process.platform === "win32") zhiva += ".exe";
 export function openWindow(url: string | number, title?: string) {
     const proc = spawn(
         resolve(zhiva),
-        [url.toString(), title || ""]
+        [url.toString(), title || ""],
+        {
+            stdio: "inherit"
+        }
     )
 
     return proc;

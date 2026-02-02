@@ -6,6 +6,8 @@ import { apiRouter, apiSecret } from "./api";
 import { readLastPort, saveLastPort } from "./lastPort";
 import { openWindow } from "./openWindow";
 import { loadJson } from "./json";
+import { showNotification } from "./notif";
+import { spawn } from "child_process";
 
 if (!process.env.ZHIVA_ROOT) process.env.ZHIVA_ROOT = join(homedir(), ".zhiva");
 const envPort = process.env.ZHIVA_PORT;
@@ -60,12 +62,41 @@ export async function oneWindow(path = "/", title?: string) {
     await waitToStart();
 
     const rawUrl = `http://localhost:` + port + path;
-    const url = new URL(rawUrl);
-    url.searchParams.set("secret", apiSecret);
+    const urlObj = new URL(rawUrl);
+    urlObj.searchParams.set("secret", apiSecret);
+    const url = urlObj.toString();
 
-    const window = openWindow(url.toString(), title);
-    window.on("close", () => process.exit(0));
-    return window;
+    const time = Date.now();
+    const window = openWindow(url, title);
+
+    window.on("exit", (code) => {
+        if (code === 0) process.exit(0);
+        showNotification("Critical error on Zhiva", `Window can't be opened.`);
+
+        // If window error (crash)
+        if (time + 3000 < Date.now())
+            process.exit(1);
+
+        // If binary error, e.g. missing dll/so
+        showNotification("Zhiva error", `Opening window failed. Using default browser. Some features may not work.`);
+        let cmd = "";
+        switch (process.platform) {
+            case "win32":
+                cmd = 'start ""';
+                break;
+            case "darwin":
+                cmd = "open";
+                break;
+            case "linux":
+                cmd = "xdg-open";
+                break;
+            default:
+                console.error("[Z-BIB-0-03] 💔 Unknown platform");
+                process.exit(1);
+        }
+
+        spawn(`${cmd} "${url}"`, { stdio: "inherit", shell: true });
+    });
 }
 
 listen(initialPort);
