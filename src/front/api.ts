@@ -1,17 +1,20 @@
 import { ZhivaApiOptions, ZhivaApiQuery } from "../types/api";
 
 const urlParams = new URLSearchParams(window.location.search);
-const token = urlParams.get("secret");
+const token = urlParams.get("zhiva-secret");
+
+export {
+    token as zhivaApiToken
+}
 
 export function fetchApi(url: string, opts: ZhivaApiOptions = {}, query: ZhivaApiQuery = {}) {
-    if (!url.startsWith("/")) url = "/" + url;
-    const urlObj = new URL("/api" + url, window.location.origin);
+    const urlObj = new URL("/zhiva-api/" + url, window.location.origin);
 
     Object.entries(query).forEach(([key, value]) => {
         urlObj.searchParams.set(key, value.toString());
     });
 
-    return fetch(urlObj.toString(), {
+    return fetch(urlObj, {
         ...opts,
         headers: {
             ...opts.headers,

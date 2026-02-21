@@ -26,7 +26,7 @@ export interface FalconFrameVars { }
 export const app = new FalconFrame<FalconFrameVars>();
 export const server = createServer(app.getApp());
 app.static("/zhiva-assets", join(import.meta.dirname, "..", "assets"));
-app.use("/api", apiRouter);
+app.use("/zhiva-api", apiRouter);
 
 let waitToStartResolve: ((port: number) => void);
 let started = false;
