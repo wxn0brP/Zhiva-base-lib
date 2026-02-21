@@ -63,7 +63,7 @@ export async function oneWindow(path = "/", title?: string) {
 
     const rawUrl = `http://localhost:` + port + path;
     const urlObj = new URL(rawUrl);
-    urlObj.searchParams.set("secret", apiSecret);
+    urlObj.searchParams.set("zhiva-secret", apiSecret);
     const url = urlObj.toString();
 
     const time = Date.now();
