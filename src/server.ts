@@ -1,13 +1,13 @@
 import FalconFrame from "@wxn0brp/falcon-frame";
+import { spawn } from "child_process";
 import { createServer } from "http";
 import { homedir } from "os";
 import { join } from "path";
 import { apiRouter, apiSecret } from "./api";
-import { readLastPort, saveLastPort } from "./lastPort";
-import { openWindow } from "./openWindow";
 import { loadJson } from "./json";
+import { readLastPort, saveLastPort } from "./lastPort";
 import { showNotification } from "./notif";
-import { spawn } from "child_process";
+import { openWindow, OpenWindowOptions } from "./openWindow";
 
 if (!process.env.ZHIVA_ROOT) process.env.ZHIVA_ROOT = join(homedir(), ".zhiva");
 const envPort = process.env.ZHIVA_PORT;
@@ -66,8 +66,16 @@ export async function oneWindow(path = "/", title?: string) {
     urlObj.searchParams.set("zhiva-secret", apiSecret);
     const url = urlObj.toString();
 
+    const { ZHIVA_APP_ID } = process.env;
+
+    const openWindowConfig: any = ZHIVA_APP_ID ? {
+        appId: ZHIVA_APP_ID,
+        backend: port,
+        path: urlObj.pathname + urlObj.search
+    } as OpenWindowOptions : url;
+
     const time = Date.now();
-    const window = openWindow(url, title);
+    const window = openWindow(openWindowConfig, title);
 
     window.on("exit", (code) => {
         if (code === 0) process.exit(0);
