@@ -14,6 +14,7 @@
     "devDependencies": {
         "@types/bun": "*",
         "@wxn0brp/biome": "*",
+        "@wxn0brp/vql-client": "^0.2",
         "typescript": "^7"
     },
     "dependencies": {
@@ -21,6 +22,14 @@
         "@wxn0brp/flanker-dialog": "^0.1.1",
         "@wxn0brp/flanker-ui": "^0.5.2",
         "@wxn0brp/vql": "^0.12.3"
+    },
+    "peerDependencies": {
+        "@wxn0brp/vql-client": "^0.2"
+    },
+    "peerDependenciesMeta": {
+        "@wxn0brp/vql-client": {
+            "optional": true
+        }
     },
     "exports": {
         ".": {

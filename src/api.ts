@@ -22,4 +22,7 @@ if (
 	console.log(
 		"[Z-BIB-3-01] ⚠️ WARNING! SECURE TOKEN FOR API DISABLED. DO YOU KNOW WHAT YOU ARE DOING?",
 	);
+	console.log(
+		"[Z-BIB-3-02] ❓ To re-enable secure token authentication, unset the ZHIVA_DEVELOPMENT_DISABLE_SECURE_TOKEN environment variable.",
+	);
 }
