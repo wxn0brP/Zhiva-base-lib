@@ -21,90 +21,100 @@ if (zhivaJson?.forcePort !== undefined) initialPort = zhivaJson.forcePort;
 else if (lastPort !== null) initialPort = lastPort;
 else initialPort = 0;
 
-export interface FalconFrameVars { }
+export interface FalconFrameVars {}
 
 export const app = new FalconFrame<FalconFrameVars>();
 export const server = createServer(app.getApp());
-app.static("/zhiva-assets", process.env.ZHIVA_ASSETS || join(import.meta.dirname, "..", "assets"));
+app.static(
+	"/zhiva-assets",
+	process.env.ZHIVA_ASSETS || join(import.meta.dirname, "..", "assets"),
+);
 app.use("/zhiva-api", apiRouter);
 
-let waitToStartResolve: ((port: number) => void);
+let waitToStartResolve: (port: number) => void;
 let started = false;
 export let port = 0;
 
 export async function waitToStart() {
-    if (started) return port;
-    return await new Promise<number>((resolve) => {
-        waitToStartResolve = resolve;
-    });
+	if (started) return port;
+	return await new Promise<number>(resolve => {
+		waitToStartResolve = resolve;
+	});
 }
 
 function listen(_port: number) {
-    server.listen(_port, "127.0.0.1", () => {
-        port = (server.address() as any).port;
-        console.log(`[Z-BIB-0-01] Server started on http://localhost:${port}`);
-        saveLastPort(port);
-        started = true;
-        waitToStartResolve?.(port);
-    });
+	server.listen(_port, "127.0.0.1", () => {
+		port = (server.address() as any).port;
+		console.log(`[Z-BIB-0-01] Server started on http://localhost:${port}`);
+		saveLastPort(port);
+		started = true;
+		waitToStartResolve?.(port);
+	});
 }
 
 server.once("error", (err: any) => {
-    if (err.code === "EADDRINUSE" && initialPort !== 0) {
-        console.log("[Z-BIB-0-02] Error start via default port. Use 0");
-        listen(0);
-    } else {
-        throw err;
-    }
+	if (err.code === "EADDRINUSE" && initialPort !== 0) {
+		console.log("[Z-BIB-0-02] Error start via default port. Use 0");
+		listen(0);
+	} else {
+		throw err;
+	}
 });
 
 export async function oneWindow(path = "/", title?: string) {
-    await waitToStart();
+	await waitToStart();
 
-    const rawUrl = `http://localhost:` + port + path;
-    const urlObj = new URL(rawUrl);
-    urlObj.searchParams.set("zhiva-secret", apiSecret);
-    const url = urlObj.toString();
+	const rawUrl = `http://localhost:` + port + path;
+	const urlObj = new URL(rawUrl);
+	urlObj.searchParams.set("zhiva-secret", apiSecret);
+	const url = urlObj.toString();
 
-    const { ZHIVA_APP_ID } = process.env;
+	const { ZHIVA_APP_ID } = process.env;
 
-    const openWindowConfig: any = ZHIVA_APP_ID ? {
-        appId: ZHIVA_APP_ID,
-        backend: port,
-        path: urlObj.pathname + urlObj.search
-    } as OpenWindowOptions : url;
+	const openWindowConfig: any = ZHIVA_APP_ID
+		? ({
+				appId: ZHIVA_APP_ID,
+				backend: port,
+				path: urlObj.pathname + urlObj.search,
+			} as OpenWindowOptions)
+		: url;
 
-    const time = Date.now();
-    const window = openWindow(openWindowConfig, title);
+	const time = Date.now();
+	const window = openWindow(openWindowConfig, title);
 
-    window.on("exit", (code) => {
-        if (code === 0) process.exit(0);
-        showNotification("Critical error on Zhiva", `Window can't be opened.`);
+	window.on("exit", code => {
+		if (code === 0) process.exit(0);
+		showNotification("Critical error on Zhiva", `Window can't be opened.`);
 
-        // If window error (crash)
-        if (time + 3000 < Date.now())
-            process.exit(1);
+		// If window error (crash)
+		if (time + 3000 < Date.now()) process.exit(1);
 
-        // If binary error, e.g. missing dll/so
-        showNotification("Zhiva error", `Opening window failed. Using default browser. Some features may not work.`);
-        let cmd = "";
-        switch (process.platform) {
-            case "win32":
-                cmd = 'start ""';
-                break;
-            case "darwin":
-                cmd = "open";
-                break;
-            case "linux":
-                cmd = "xdg-open";
-                break;
-            default:
-                console.error("[Z-BIB-0-03] 💔 Unknown platform");
-                process.exit(1);
-        }
+		// If binary error, e.g. missing dll/so
+		showNotification(
+			"Zhiva error",
+			`Opening window failed. Using default browser. Some features may not work.`,
+		);
+		let cmd = "";
+		switch (process.platform) {
+			case "win32":
+				cmd = 'start ""';
+				break;
+			case "darwin":
+				cmd = "open";
+				break;
+			case "linux":
+				cmd = "xdg-open";
+				break;
+			default:
+				console.error("[Z-BIB-0-03] 💔 Unknown platform");
+				process.exit(1);
+		}
 
-        spawn(`${cmd} "${url}"`, { stdio: "inherit", shell: true });
-    });
+		spawn(`${cmd} "${url}"`, {
+			stdio: "inherit",
+			shell: true,
+		});
+	});
 }
 
 listen(initialPort);
