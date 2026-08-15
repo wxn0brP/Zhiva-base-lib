@@ -10,7 +10,7 @@
 		"rootDir": "./src",
 		"strict": false,
 		"types": [
-			"*"
+			"@types/bun"
 		]
 	},
 	"include": [
