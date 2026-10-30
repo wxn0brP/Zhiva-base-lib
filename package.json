@@ -14,7 +14,7 @@
     "devDependencies": {
         "@types/bun": "*",
         "@wxn0brp/biome": "*",
-        "@wxn0brp/vql-client": "^0.2",
+        "@wxn0brp/vql-client": "^0.3.0",
         "typescript": "^7"
     },
     "dependencies": {
