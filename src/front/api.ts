@@ -25,13 +25,13 @@ export function fetchApi(
 	});
 }
 
-export async function fetchApiPost(
+export async function fetchApiPost<T = any>(
 	url: string,
 	body: Record<string, any> = {},
 	opts: ZhivaApiOptions = {},
 	query: ZhivaApiQuery = {},
 ) {
-	return await fetchApi(
+	return (await fetchApi(
 		url,
 		{
 			method: "POST",
@@ -43,13 +43,13 @@ export async function fetchApiPost(
 			},
 		},
 		query,
-	).then(res => res.json());
+	).then(res => res.json())) as T;
 }
 
-export async function fetchApiJson(
+export async function fetchApiJson<T = any>(
 	url: string,
 	opts: ZhivaApiOptions = {},
 	query: ZhivaApiQuery = {},
 ) {
-	return await fetchApi(url, opts, query).then(res => res.json());
+	return (await fetchApi(url, opts, query).then(res => res.json())) as T;
 }
