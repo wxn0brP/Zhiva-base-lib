@@ -28,6 +28,9 @@ export const server = createServer(app.getApp());
 app.static(
 	"/zhiva-assets",
 	process.env.ZHIVA_ASSETS || join(import.meta.dirname, "..", "assets"),
+	{
+		errorIfDirNotFound: false,
+	},
 );
 app.use("/zhiva-api", apiRouter);
 
